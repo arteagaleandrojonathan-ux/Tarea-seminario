@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="actividad4.css">
 </head>
 <body>
       <!-- Contruir un CUESTIONARIO (5 interrogantes)  -->
@@ -15,64 +16,163 @@
         <h1>CUESTIONARIO</h1>
         <h2>Responder las siguientes preguntas</h2>
     </div>
-    <form action="" class="formularioPreguntas">
-        <div class="preguntas">
-            <div class="">
-                <label for="">Pregunta 1 :</label> <br>
-                <span>¿Cual es el país mas poblado del mundo?</span>
-                <div>
-                    <option value="Perú">Perú</option>
-                    <option value="Venezuela">Venezuela</option>
-                    <option value="India">India</option>
-                    <option value="China">China</option>
-                </div>
-            </div>
-            <div>
-                <label for="">Pregunta 2 :</label> <br>
-                <span>¿Cual es el país mas Grande del mundo?</span>
-                <div>
-                    <option value="Perú">Perú</option>
-                    <option value="Rusia">Rusia</option>
-                    <option value="Japon">Japon</option>
-                    <option value="EE.UU">EE.UU</option>
-                </div>
-            </div>
-            <div>
-                <label for="">Pregunta 3 :</label> <br>
-                <span>¿Cual es el la capital de estado unidos?</span>
-                <div>
-                    <option value="New Yokr">New Yokr</option>
-                    <option value="Washington D.C">Washington D.C</option>
-                    <option value="Miami">Miami</option>
-                    <option value="California">California</option>
-                </div>
-            </div>
-            <div>
-                <label for="">Pregunta 4 :</label> <br>
-                <span>Quien es la persona mas rica del mundo?</span>
-                <div>
-                    <option value="Mark Zuckerberg">Mark Zuckerberg</Mark></option>
-                    <option value="Elon Musk">Elon Musk</option>
-                    <option value="Bill Gates">Bill Gates</option>
-                    <option value="Jeff Bezos">Jeff Bezos</option>
-                </div>
-            </div>
-            <div>
-                <label for="">Pregunta 5 :</label> <br>
-                <span>¿Cual es el país mas Grande del mundo?</span>
-                <div>
-                    <option value="Perú">Perú</option>
-                    <option value="Rusia">Rusia</option>
-                    <option value="Japon">Japon</option>
-                    <option value="EE.UU">EE.UU</option>
-                </div>
-            </div>
+    <form action="" class="formularioPreguntas" id="formulario">
 
+        <div id="pagina">
+                <h3 id="numeroPregunta"></h3>
+                <p id="pregunta"></p>
+            <div id="alternativas"></div>
         </div>
-
-    
-
+        <p id="resultado"></p>
+        
+        <div>
+            <button type="button" id="anterior">Anterior</button>
+            <button type="button" id="siguiente">Siguiente</button>
+        </div>
+            
+        
 
     </form>
+
+    <script>
+    
+        const cuestionario = [
+            {
+                pregunta: "¿Cuál es el país más poblado del mundo?",
+                alternativas: ["Perú", "Venezuela", "India"],
+                respuesta: "India"
+            },
+
+            {
+                pregunta: "¿Cuál es el país más grande del mundo?",
+                alternativas: ["Perú", "Rusia", "Japón"],
+                respuesta: "Rusia"
+            },
+
+            {
+                pregunta: "¿Cuál es la capital de Estados Unidos?",
+                alternativas: ["Nueva York", "Washington D.C.", "Miami"],
+                respuesta: "Washington D.C."
+            },
+
+            {
+                pregunta: "¿Quién es la persona más rica del mundo?",
+                alternativas: ["Mark Zuckerberg", "Elon Musk", "Bill Gates"],
+                respuesta: "Elon Musk"
+            },
+
+            {
+                pregunta: "¿Cuál de estos países no tiene salida al mar?",
+                alternativas: ["Paraguay", "Ecuador", "Francia"],
+                respuesta: "Paraguay"
+            }
+        ]
+
+
+        const numeroPregunta = document.getElementById('numeroPregunta');
+        const pregunta = document.getElementById('pregunta');
+        const alternativas = document.getElementById('alternativas'); 
+        const resultado = document.getElementById('resultado');
+        const anterior = document.getElementById('anterior');
+        const siguiente = document.getElementById('siguiente');
+        const formulario = document.getElementById('formulario')
+
+        let indice = 0
+        const respuestaPersona= []
+
+        function mostrarPregunta(){
+            const datos = cuestionario[indice]
+            numeroPregunta.innerHTML = "Pregunta " + (indice + 1) + " de " + cuestionario.length;
+            pregunta.innerHTML = datos.pregunta;
+            alternativas.innerHTML = "";
+
+            datos.alternativas.forEach(function(opcion){
+                const label = document.createElement('label');
+                label.className = 'alternativa';
+
+                const entrada = document.createElement('input')
+                entrada.type = "radio";
+                entrada.name = "respuesta";
+                entrada.value = opcion;
+
+                if(respuestaPersona[indice] === opcion){
+                    entrada.checked = true;
+                }
+
+                label.appendChild(entrada);
+                label.appendChild(document.createTextNode(" " + opcion));
+
+                alternativas.appendChild(label);
+            });
+
+            anterior.disabled = indice === 0 
+            siguiente.innerHTML = indice === cuestionario.length - 1 ? "Finalizar" : "Siguiente";
+
+            resultado.innerHTML="";
+        }
+
+        // Guardar la alternativa elegida
+        formulario.addEventListener("change", function () {
+
+            const seleccionada = document.querySelector(
+                'input[name="respuesta"]:checked'
+            );
+
+            if (seleccionada) {
+                respuestaPersona[indice] = seleccionada.value;
+            }
+        });
+
+        // Botón para retroceder
+        anterior.addEventListener("click", function () {
+
+            if (indice > 0) {
+                indice--;
+                mostrarPregunta();
+            }
+        });
+
+        // Botón para avanzar o finalizar
+        siguiente.addEventListener("click", function () {
+
+            const seleccionada = document.querySelector(
+                'input[name="respuesta"]:checked'
+            );
+
+            if (seleccionada) {
+                respuestaPersona[indice] = seleccionada.value;
+            }
+
+            if (indice < cuestionario.length - 1) {
+                indice++;
+                mostrarPregunta();
+
+            } else {
+
+                let puntos = 0;
+                for (let i = 0; i < cuestionario.length; i++) {
+                    if (respuestaPersona[i] === cuestionario[i].respuesta) {
+                        puntos++;
+                    }
+                }
+
+                pregunta.innerHTML = "¡Cuestionario terminado!";
+                numeroPregunta.innerHTML = "Resultado final";
+                alternativas.innerHTML = "";
+
+                resultado.innerHTML =
+                    "Obtuviste " + puntos + " de " +
+                    cuestionario.length + " puntos.";
+
+                anterior.disabled = true;
+                siguiente.disabled = true;
+            }
+        });
+
+        // Mostrar la primera pregunta
+        mostrarPregunta();
+
+        
+    </script>
 </body>
 </html>
